@@ -1,8 +1,227 @@
+// 'use strict';
+//
+// const express = require('express');
+//
+// // Create an router instance (aka "mini-app")
+// const router = express.Router();
+//
+// // TEMP: Simple In-Memory Database
+// // const data = require('../db/notes');
+// // const simDB = require('../db/simDB');
+// // const notes = simDB.initialize(data);
+//
+// const knex = require('../knex');
+//
+// // Get All (and search by query)
+// router.get('/', (req, res, next) => {
+//   const { searchTerm, folderId } = req.query;
+//
+//   //   notes.filter(searchTerm)
+//   //     .then(list => {
+//   //       res.json(list);
+//   //     })
+//   //     .catch(err => {
+//   //       next(err);
+//   //     });
+//
+//   knex
+//     .select('notes.id', 'title', 'content', 'folders.id as folderId', 'folders.name as folderName')
+//     .from('notes')
+//     .leftJoin('folders', 'notes.folder_id', 'folders.id')
+//     .modify(queryBuilder => {
+//       if (searchTerm) {
+//         queryBuilder.where('title', 'like', `%${searchTerm}%`);
+//       }
+//     })
+//     .modify(function (queryBuilder) {
+//       if (folderId) {
+//         queryBuilder.where('folder_id', folderId);
+//       }
+//     })
+//     .orderBy('notes.id')
+//     .then(results => {
+//       res.json(results);
+//     })
+//     .catch(err => {
+//       next(err);
+//     });
+// });
+//
+//
+// // Get a single item
+// router.get('/:id', (req, res, next) => {
+//   const id = req.params.id;
+//   const { folderId } = req.query;
+//
+//   // notes.find(id)
+//   //   .then(item => {
+//   //     if (item) {
+//   //       res.json(item);
+//   //     } else {
+//   //       next();
+//   //     }
+//   //   })
+//   //   .catch(err => {
+//   //     next(err);
+//   //   });
+//   knex
+//     .select('notes.id', 'title', 'content', 'folders.id as folderId', 'folders.name as folderName')
+//     .from('notes')
+//     .leftJoin('folders', 'notes.folder_id', 'folders.id')
+//     .modify(function (queryBuilder) {
+//       if (folderId) {
+//         queryBuilder.where('folder_id', folderId);
+//       }
+//     })
+//     .then(results => {
+//       if (results.length) {
+//         res.json(results[0]);
+//       } else {
+//         next();
+//       }
+//
+//     }).catch(err => {
+//       next(err);
+//     });
+// });
+//
+// // Put update an item
+// router.put('/:id', (req, res, next) => {
+//   const id = req.params.id;
+//
+//   /***** Never trust users - validate input *****/
+//   const updateObj = {};
+//   const updateableFields = ['title', 'content', 'folder_id'];
+//
+//   updateableFields.forEach(field => {
+//     if (field in req.body) {
+//       updateObj[field] = req.body[field];
+//     }
+//   });
+//
+//   /***** Never trust users - validate input *****/
+//   if (!updateObj.title) {
+//     const err = new Error('Missing `title` in request body');
+//     err.status = 400;
+//     return next(err);
+//   }
+//
+//   //   notes.update(id, updateObj)
+//   //     .then(item => {
+//   //       if (item) {
+//   //         res.json(item);
+//   //       } else {
+//   //         next();
+//   //       }
+//   //     })
+//   //     .catch(err => {
+//   //       next(err);
+//   //     });
+//   // });
+//
+//   knex('notes')
+//     .where('id', id)
+//     .update(updateObj)
+//     .returning(['id', 'title', 'content', 'folder_id'])
+//     .then(() => {
+//       return knex
+//         .select('notes.id', 'title', 'content', 'folder_id as folderId', 'folders.name as folderName')
+//         .from('notes')
+//         .leftJoin('folders', 'notes.folder_id', 'folders.id')
+//         .where('notes.id', id);
+//     })
+//     .then(([result]) => {
+//       if(result) {
+//         res.status(200);
+//         res.json(result);
+//       } else {
+//         next();
+//       }
+//     })
+//     .catch(err => {
+//       next(err);
+//     });
+// });
+//
+// // Post (insert) an item
+// router.post('/', (req, res, next) => {
+//   const { title, content, folderId } = req.body;
+//
+//   const newItem = {
+//     title: title,
+//     content: content,
+//     folder_id: folderId
+//   };
+//   /***** Never trust users - validate input *****/
+//   // if (!newItem.title) {
+//   //   const err = new Error('Missing `title` in request body');
+//   //   err.status = 400;
+//   //   return next(err);
+//   //}
+//   let noteId;
+//
+//   // notes.create(newItem)
+//   //   .then(item => {
+//   //     if (item) {
+//   //       res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item);
+//   //     }
+//   //   })
+//   //   .catch(err => {
+//   //     next(err);
+//   //   });
+//   knex
+//     .insert(newItem)
+//     .into('notes')
+//     .returning('id')
+//     .then(([id]) => {
+//       noteId = id;
+//       // Using the new id, select the new note and the folder
+//       return knex.select('notes.id', 'title', 'content', 'folder_id as folderId', 'folders.name as folerName')
+//         .from('notes')
+//         .leftJoin('folders', 'notes.folder_id', 'folders.id')
+//         .where('notes.id', noteId);
+//     })
+//     .then(([result]) => {
+//       res.location(`${req.originalUrl}/${result.id}`).status(201).json(result);
+//     })
+//     .catch(err => {
+//       next(err);
+//     });
+// });
+//
+// // Delete an item
+// router.delete('/:id', (req, res, next) => {
+//   const id = req.params.id;
+//   console.log(id);
+//
+//   // notes.delete(id)
+//   //   .then(() => {
+//   //     res.sendStatus(204);
+//   //   })
+//   //   .catch(err => {
+//   //     next(err);
+//   //   });
+//
+//   knex('notes')
+//     .where('id', id)
+//     .del()
+//     .then(() => {
+//       res.sendStatus(204);
+//     })
+//     .catch(err => {
+//       next(err);
+//     });
+// });
+//
+//
+// module.exports = router;
+
 'use strict';
 
 const express = require('express');
 
 // Create an router instance (aka "mini-app")
+const knex = require('../knex');
 const router = express.Router();
 
 // TEMP: Simple In-Memory Database
@@ -10,208 +229,147 @@ const router = express.Router();
 // const simDB = require('../db/simDB');
 // const notes = simDB.initialize(data);
 
-const knex = require('../knex');
-
 // Get All (and search by query)
 router.get('/', (req, res, next) => {
-  const { searchTerm, folderId } = req.query;
-   
-  //   notes.filter(searchTerm)
-  //     .then(list => {
-  //       res.json(list);
-  //     })
-  //     .catch(err => {
-  //       next(err);
-  //     });
-
-  knex
-    .select('notes.id', 'title', 'content', 'folders.id as folderId', 'folders.name as folderName')
-    .from('notes')
-    .leftJoin('folders', 'notes.folder_id', 'folders.id')
-    .modify(queryBuilder => {
-      if (searchTerm) {
-        queryBuilder.where('title', 'like', `%${searchTerm}%`);
-      }
-    })
-    .modify(function (queryBuilder) {
-      if (folderId) {
-        queryBuilder.where('folder_id', folderId);
-      }
-    })
-    .orderBy('notes.id')
-    .then(results => {
-      res.json(results);
-    })
-    .catch(err => {
-      next(err);
-    });
+    const { searchTerm } = req.query;
+    const { folderId } = req.query;
+    knex.select('notes.id', 'title', 'content', 'folders.id as folderId', 'folders.name as folderName')
+        .from('notes')
+        .leftJoin('folders', 'notes.folder_id', 'folders.id')
+        .modify(queryBuilder => {
+            if (searchTerm) {
+                queryBuilder.where('title', 'like', `%${searchTerm}%`);
+            }
+        })
+        .modify(queryBuilder => {
+            if(folderId) {
+                queryBuilder.where('folder_id', folderId);
+            }
+        })
+        .orderBy('notes.id')
+        .then(results => {
+            res.json(results);
+        })
+        .catch(err => {
+            next(err);
+        });
 });
-
 
 // Get a single item
 router.get('/:id', (req, res, next) => {
-  const id = req.params.id;
-  const { folderId } = req.query;
+    const id = req.params.id;
+    const { folderId } = req.query;
 
-  // notes.find(id)
-  //   .then(item => {
-  //     if (item) {
-  //       res.json(item);
-  //     } else {
-  //       next();
-  //     }
-  //   })
-  //   .catch(err => {
-  //     next(err);
-  //   });
-  knex
-    .select('notes.id', 'title', 'content', 'folders.id as folderId', 'folders.name as folderName')
-    .from('notes')
-    .leftJoin('folders', 'notes.folder_id', 'folders.id')
-    .modify(function (queryBuilder) {
-      if (folderId) {
-        queryBuilder.where('folder_id', folderId);
-      }
-    })
-    .then(results => {
-      if (results.length) {
-        res.json(results[0]);
-      } else {
-        next();
-      }
-  
-    }).catch(err => {
-      next(err);
+    knex
+        .first('notes.id', 'title', 'content', 'folders.id as folderId', 'folders.name as folderName')
+        .from('notes')
+        .leftJoin('folders', 'notes.folder_id', 'folders.id')
+        .modify(queryBuilder => {
+            if(folderId) {
+                queryBuilder.where('folder_id', folderId);
+            }
+        })
+        .then(result => {
+            if(result) {
+                res.json(result);
+            } else {
+                next();
+            }
+        }).catch(err => {
+        next(err);
     });
 });
 
 // Put update an item
 router.put('/:id', (req, res, next) => {
-  const id = req.params.id;
+    const id = req.params.id;
 
-  /***** Never trust users - validate input *****/
-  const updateObj = {};
-  const updateableFields = ['title', 'content', 'folder_id'];
+    /***** Never trust users - validate input *****/
+    const updateObj = {};
+    const updateableFields = ['title', 'content', 'folder_id'];
 
-  updateableFields.forEach(field => {
-    if (field in req.body) {
-      updateObj[field] = req.body[field];
-    }
-  });
-
-  /***** Never trust users - validate input *****/
-  if (!updateObj.title) {
-    const err = new Error('Missing `title` in request body');
-    err.status = 400;
-    return next(err);
-  }
-
-  //   notes.update(id, updateObj)
-  //     .then(item => {
-  //       if (item) {
-  //         res.json(item);
-  //       } else {
-  //         next();
-  //       }
-  //     })
-  //     .catch(err => {
-  //       next(err);
-  //     });
-  // });
-  
-  knex('notes')
-    .where('id', id)
-    .update(updateObj)
-    .returning(['id', 'title', 'content', 'folder_id'])
-    .then(() => {
-      return knex
-        .select('notes.id', 'title', 'content', 'folder_id as folderId', 'folders.name as folderName')
-        .from('notes')
-        .leftJoin('folders', 'notes.folder_id', 'folders.id')
-        .where('notes.id', id);
-    })
-    .then(([result]) => {
-      if(result) {
-        res.status(200);
-        res.json(result);
-      } else {
-        next();
-      }
-    })
-    .catch(err => {
-      next(err);
+    updateableFields.forEach(field => {
+        if (field in req.body) {
+            updateObj[field] = req.body[field];
+        }
     });
+
+    /***** Never trust users - validate input *****/
+    if (!updateObj.title) {
+        const err = new Error('Missing `title` in request body');
+        err.status = 400;
+        return next(err);
+    }
+
+    knex('notes')
+        .where('id', id)
+        .update(updateObj)
+        .returning(['id', 'title', 'content', 'folder_id'])
+        .then(() => {
+            return knex
+                .select('notes.id', 'title', 'content', 'folder_id as folderId', 'folders.name as folderName')
+                .from('notes')
+                .leftJoin('folders', 'notes.folder_id', 'folders.id')
+                .where('notes.id', id);
+        })
+        .then(([result]) => {
+            if(result) {
+                res.status(200);
+                res.json(result);
+            } else {
+                next();
+            }
+        })
+        .catch(err =>
+            next(err)
+        );
 });
 
 // Post (insert) an item
 router.post('/', (req, res, next) => {
-  const { title, content, folderId } = req.body;
+    const { title, content, folderId } = req.body; // Add `folderId` to object destructure
+    /*
+    REMOVED FOR BREVITY
+    */
+    const newItem = {
+        title: title,
+        content: content,
+        folder_id: folderId  // Add `folderId`
+    };
 
-  const newItem = {
-    title: title,
-    content: content,
-    folder_id: folderId
-  };
-  /***** Never trust users - validate input *****/
-  // if (!newItem.title) {
-  //   const err = new Error('Missing `title` in request body');
-  //   err.status = 400;
-  //   return next(err);
-  //}
-  let noteId;
+    let noteId;
 
-  // notes.create(newItem)
-  //   .then(item => {
-  //     if (item) {
-  //       res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item);
-  //     }
-  //   })
-  //   .catch(err => {
-  //     next(err);
-  //   });
-  knex
-    .insert(newItem)
-    .into('notes')
-    .returning('id')
-    .then(([id]) => {
-      noteId = id;
-      // Using the new id, select the new note and the folder
-      return knex.select('notes.id', 'title', 'content', 'folder_id as folderId', 'folders.name as folerName')
-        .from('notes')
-        .leftJoin('folders', 'notes.folder_id', 'folders.id')
-        .where('notes.id', noteId);
-    })
-    .then(([result]) => {
-      res.location(`${req.originalUrl}/${result.id}`).status(201).json(result); 
-    })
-    .catch(err => {
-      next(err);
-    });
+    // Insert new note, instead of returning all the fields, just return the new `id`
+    knex.insert(newItem)
+        .into('notes')
+        .returning('id')
+        .then(([id]) => {
+            noteId = id;
+            // Using the new id, select the new note and the folder
+            return knex.select('notes.id', 'title', 'content', 'folder_id as folderId', 'folders.name as folderName')
+                .from('notes')
+                .leftJoin('folders', 'notes.folder_id', 'folders.id')
+                .where('notes.id', noteId);
+        })
+        .then(([result]) => {
+            res.location(`${req.originalUrl}/${result.id}`).status(201).json(result);
+        })
+        .catch(err => next(err));
 });
+
 
 // Delete an item
 router.delete('/:id', (req, res, next) => {
-  const id = req.params.id;
-  console.log(id);
+    const id = req.params.id;
 
-  // notes.delete(id)
-  //   .then(() => {
-  //     res.sendStatus(204);
-  //   })
-  //   .catch(err => {
-  //     next(err);
-  //   });
-
-  knex('notes')
-    .where('id', id)
-    .del()
-    .then(() => {
-      res.sendStatus(204);
-    })
-    .catch(err => {
-      next(err);
-    }); 
+    knex('notes')
+        .where({'notes.id': id})
+        .del()
+        .then(() => {
+            res.sendStatus(204);
+        }).catch(err => {
+        next(err);
+    });
 });
-
 
 module.exports = router;
