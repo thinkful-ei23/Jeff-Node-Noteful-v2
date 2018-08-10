@@ -83,8 +83,8 @@
       <ObjectId>2200</ObjectId>
       <Comment>standard public schema</Comment>
       <Owner>postgres</Owner>
-      <IntrospectionTimestamp>2018-08-09.14:54:42.570</IntrospectionTimestamp>
-      <IntrospectionStateNumber>1301</IntrospectionStateNumber>
+      <IntrospectionTimestamp>2018-08-10.00:23:15.289</IntrospectionTimestamp>
+      <IntrospectionStateNumber>1330</IntrospectionStateNumber>
       <Current>1</Current>
       <Visible>1</Visible>
     </schema>
@@ -113,54 +113,54 @@
       <Comment>block range index (BRIN) access method</Comment>
     </access-method>
     <sequence id="22" parent="15" name="folders_id_seq">
-      <ObjectId>17571</ObjectId>
+      <ObjectId>17679</ObjectId>
       <Owner>maxjeffwell</Owner>
-      <StateNumber>1299</StateNumber>
+      <StateNumber>1328</StateNumber>
       <SequenceIdentity>1</SequenceIdentity>
       <BelongsToColumn>1</BelongsToColumn>
       <CacheSize>1</CacheSize>
     </sequence>
     <sequence id="23" parent="15" name="notes_id_seq">
-      <ObjectId>17582</ObjectId>
+      <ObjectId>17690</ObjectId>
       <Owner>maxjeffwell</Owner>
-      <StateNumber>1300</StateNumber>
+      <StateNumber>1329</StateNumber>
       <SequenceIdentity>1</SequenceIdentity>
       <BelongsToColumn>1</BelongsToColumn>
       <CacheSize>1</CacheSize>
     </sequence>
     <sequence id="24" parent="15" name="tags_id_seq">
-      <ObjectId>17558</ObjectId>
+      <ObjectId>17666</ObjectId>
       <Owner>maxjeffwell</Owner>
-      <StateNumber>1298</StateNumber>
+      <StateNumber>1327</StateNumber>
       <SequenceIdentity>1</SequenceIdentity>
       <BelongsToColumn>1</BelongsToColumn>
       <CacheSize>1</CacheSize>
     </sequence>
     <table id="25" parent="15" name="folders">
-      <ObjectId>17573</ObjectId>
+      <ObjectId>17681</ObjectId>
       <Owner>maxjeffwell</Owner>
-      <StateNumber>1300</StateNumber>
+      <StateNumber>1329</StateNumber>
     </table>
     <table id="26" parent="15" name="notes">
-      <ObjectId>17584</ObjectId>
+      <ObjectId>17692</ObjectId>
       <Owner>maxjeffwell</Owner>
-      <StateNumber>1301</StateNumber>
+      <StateNumber>1330</StateNumber>
     </table>
     <table id="27" parent="15" name="notes_tags">
-      <ObjectId>17599</ObjectId>
+      <ObjectId>17707</ObjectId>
       <Owner>maxjeffwell</Owner>
-      <StateNumber>1301</StateNumber>
+      <StateNumber>1330</StateNumber>
     </table>
     <table id="28" parent="15" name="tags">
-      <ObjectId>17560</ObjectId>
+      <ObjectId>17668</ObjectId>
       <Owner>maxjeffwell</Owner>
-      <StateNumber>1301</StateNumber>
+      <StateNumber>1330</StateNumber>
     </table>
     <column id="29" parent="25" name="id">
       <Position>1</Position>
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>1299</StateNumber>
+      <StateNumber>1328</StateNumber>
       <DefaultExpression>nextval(&apos;folders_id_seq&apos;::regclass)</DefaultExpression>
       <TypeId>23</TypeId>
       <SequenceName>folders_id_seq</SequenceName>
@@ -169,16 +169,16 @@
       <Position>2</Position>
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>1299</StateNumber>
+      <StateNumber>1328</StateNumber>
       <TypeId>25</TypeId>
     </column>
     <index id="31" parent="25" name="folders_pkey">
-      <ObjectId>17580</ObjectId>
+      <ObjectId>17688</ObjectId>
       <ColNames>id</ColNames>
       <Unique>1</Unique>
     </index>
     <key id="32" parent="25" name="folders_pkey">
-      <ObjectId>17581</ObjectId>
+      <ObjectId>17689</ObjectId>
       <ColNames>id</ColNames>
       <UnderlyingIndexName>folders_pkey</UnderlyingIndexName>
       <Primary>1</Primary>
@@ -187,7 +187,7 @@
       <Position>1</Position>
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>1300</StateNumber>
+      <StateNumber>1329</StateNumber>
       <DefaultExpression>nextval(&apos;notes_id_seq&apos;::regclass)</DefaultExpression>
       <TypeId>23</TypeId>
       <SequenceName>notes_id_seq</SequenceName>
@@ -196,43 +196,43 @@
       <Position>2</Position>
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>1300</StateNumber>
+      <StateNumber>1329</StateNumber>
       <TypeId>25</TypeId>
     </column>
     <column id="35" parent="26" name="content">
       <Position>3</Position>
       <DataType>text|0s</DataType>
-      <StateNumber>1300</StateNumber>
+      <StateNumber>1329</StateNumber>
       <TypeId>25</TypeId>
     </column>
     <column id="36" parent="26" name="created">
       <Position>4</Position>
       <DataType>timestamp|0s</DataType>
-      <StateNumber>1300</StateNumber>
+      <StateNumber>1329</StateNumber>
       <DefaultExpression>now()</DefaultExpression>
       <TypeId>1114</TypeId>
     </column>
     <column id="37" parent="26" name="folder_id">
       <Position>5</Position>
       <DataType>integer|0s</DataType>
-      <StateNumber>1300</StateNumber>
+      <StateNumber>1329</StateNumber>
       <TypeId>23</TypeId>
     </column>
     <index id="38" parent="26" name="notes_pkey">
-      <ObjectId>17592</ObjectId>
+      <ObjectId>17700</ObjectId>
       <ColNames>id</ColNames>
       <Unique>1</Unique>
     </index>
     <key id="39" parent="26" name="notes_pkey">
-      <ObjectId>17593</ObjectId>
+      <ObjectId>17701</ObjectId>
       <ColNames>id</ColNames>
       <UnderlyingIndexName>notes_pkey</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
     <foreign-key id="40" parent="26" name="notes_folder_id_fkey">
-      <ObjectId>17594</ObjectId>
+      <ObjectId>17702</ObjectId>
       <ColNames>folder_id</ColNames>
-      <RefTableId>17573</RefTableId>
+      <RefTableId>17681</RefTableId>
       <RefColPositions>1</RefColPositions>
       <RefTableName>folders</RefTableName>
       <RefKeyName>folders_pkey</RefKeyName>
@@ -243,20 +243,20 @@
       <Position>1</Position>
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>1301</StateNumber>
+      <StateNumber>1330</StateNumber>
       <TypeId>23</TypeId>
     </column>
     <column id="42" parent="27" name="tag_id">
       <Position>2</Position>
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>1301</StateNumber>
+      <StateNumber>1330</StateNumber>
       <TypeId>23</TypeId>
     </column>
     <foreign-key id="43" parent="27" name="notes_tags_note_id_fkey">
-      <ObjectId>17602</ObjectId>
+      <ObjectId>17710</ObjectId>
       <ColNames>note_id</ColNames>
-      <RefTableId>17584</RefTableId>
+      <RefTableId>17692</RefTableId>
       <RefColPositions>1</RefColPositions>
       <RefTableName>notes</RefTableName>
       <RefKeyName>notes_pkey</RefKeyName>
@@ -264,9 +264,9 @@
       <OnDelete>cascade</OnDelete>
     </foreign-key>
     <foreign-key id="44" parent="27" name="notes_tags_tag_id_fkey">
-      <ObjectId>17607</ObjectId>
+      <ObjectId>17715</ObjectId>
       <ColNames>tag_id</ColNames>
-      <RefTableId>17560</RefTableId>
+      <RefTableId>17668</RefTableId>
       <RefColPositions>1</RefColPositions>
       <RefTableName>tags</RefTableName>
       <RefKeyName>tags_pkey</RefKeyName>
@@ -277,7 +277,7 @@
       <Position>1</Position>
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>1298</StateNumber>
+      <StateNumber>1327</StateNumber>
       <DefaultExpression>nextval(&apos;tags_id_seq&apos;::regclass)</DefaultExpression>
       <TypeId>23</TypeId>
       <SequenceName>tags_id_seq</SequenceName>
@@ -286,27 +286,27 @@
       <Position>2</Position>
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>1298</StateNumber>
+      <StateNumber>1327</StateNumber>
       <TypeId>25</TypeId>
     </column>
     <index id="47" parent="28" name="tags_pkey">
-      <ObjectId>17567</ObjectId>
+      <ObjectId>17675</ObjectId>
       <ColNames>id</ColNames>
       <Unique>1</Unique>
     </index>
     <index id="48" parent="28" name="tags_name_key">
-      <ObjectId>17569</ObjectId>
+      <ObjectId>17677</ObjectId>
       <ColNames>name</ColNames>
       <Unique>1</Unique>
     </index>
     <key id="49" parent="28" name="tags_pkey">
-      <ObjectId>17568</ObjectId>
+      <ObjectId>17676</ObjectId>
       <ColNames>id</ColNames>
       <UnderlyingIndexName>tags_pkey</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
     <key id="50" parent="28" name="tags_name_key">
-      <ObjectId>17570</ObjectId>
+      <ObjectId>17678</ObjectId>
       <ColNames>name</ColNames>
       <UnderlyingIndexName>tags_name_key</UnderlyingIndexName>
     </key>

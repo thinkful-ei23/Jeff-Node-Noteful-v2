@@ -75,8 +75,8 @@ router.get('/:id', (req, res, next) => {
       }
     })
 	    .catch(err => {
-		    next(err);
-	    });
+	   	    next(err);
+	 });
 });
 
 // PUT: update an item with an ID
@@ -146,7 +146,7 @@ router.put('/:id', (req, res, next) => {
 
 // Post (insert) an item
 router.post('/', (req, res, next) => {
-  const { title, content, folderId, tagId } = req.body; // Add `folderId` and `tagId` to object destructure
+  const { title, content, folderId, tags } = req.body; // Add `folderId` and `tagId` to object destructure
   const newItem = {
     title: title,
     content: content,
@@ -166,14 +166,14 @@ router.post('/', (req, res, next) => {
     })
 	    .then(() => {
 	    	// Select the new note and leftJoin on folders and tags
-      return knex.select('notes.id', 'title', 'content', 'folder_id as folderId', 'folders.name as folderName', 'tags.id as tagId', 'tags.Name as tagName')
+      return knex.select('notes.id', 'title', 'content', 'folder_id as folderId', 'folders.name as folderName', 'tags.id as tagId', 'tags.name as tagName')
         .from('notes')
         .leftJoin('folders', 'notes.folder_id', 'folders.id')
 	            .leftJoin('notes_tags', 'notes.id', 'notes_tags.note_id')
 	            .leftJoin('tags', 'tags.id', 'notes_tags.tag_id')
         .where('notes.id', noteId);
     })
-    .then(([result]) => {
+    .then((result) => {
         	if (result) {
 		        // Hydrate the results
         		const hydrated = hydrateNotes(result)[0];
