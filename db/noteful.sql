@@ -63,7 +63,7 @@ INSERT INTO notes_tags (note_id, tag_id) VALUES
     (1001, 12),
     (1002, 12),
     (1003, 11),
-    (1000, 10),
+    (1000, 11),
     (1004, 10);
 
 SELECT title, notes.id, folders.id, folders.name FROM notes

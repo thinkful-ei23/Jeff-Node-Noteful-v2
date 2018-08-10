@@ -20,8 +20,8 @@ router.get('/', (req, res, next) => {
   knex.select('notes.id', 'title', 'content', 'folders.id as folderId', 'folders.name as folderName', 'tags.id as tagId', 'tags.name as tagName')
     .from('notes')
     .leftJoin('folders', 'notes.folder_id', 'folders.id')
-    .leftJoin('notes_tags', 'notes.id', 'note_id')
-    .leftJoin('tags', 'tag_id', 'tags.id')
+    .leftJoin('notes_tags', 'notes.id', 'notes_tags.note_id')
+    .leftJoin('tags', 'tags.id', 'notes_tags.tag_id')
     .modify(queryBuilder => {
       if (searchTerm) {
         queryBuilder.where('title', 'like', `%${searchTerm}%`);
@@ -56,20 +56,20 @@ router.get('/:id', (req, res, next) => {
   const { folderId } = req.query;
 
   knex
-    .first('notes.id', 'title', 'content', 'folders.id as folderId', 'folders.name as folderName', 'tags.Id as tagId', 'tags.name as tagName')
+    .select('notes.id', 'title', 'content', 'folders.id as folderId', 'folders.name as folderName', 'tags.id as tagId', 'tags.name as tagName')
     .from('notes')
     .leftJoin('folders', 'notes.folder_id', 'folders.id')
-	    .leftJoin('notes_tags', 'notes.tag_Id', 'tags.id')
-	    .leftJoin('tags', 'tag_Id', 'tags.id')
+    .leftJoin('notes_tags', 'notes.id', 'notes_tags.note_id')
+    .leftJoin('tags', 'tags.id', 'notes_tags.tag_id')
     .modify(queryBuilder => {
       if (id) {
         queryBuilder.where('notes.id', id);
       }
     })
     .then(result => {
-      if(result) {
+      if(result.length) {
         const hydrated = hydrateNotes(result);
-            	res.json(hydrated);
+            	res.json(hydrated[0]);
       } else {
         next();
       }
@@ -86,7 +86,7 @@ router.put('/:id', (req, res, next) => {
   const updateObj = {
     title: title,
     content: content,
-    folder_id: folderId,
+    folder_id: (folderId) ? folderId : null
   };
 
   /***** Never trust users - validate input *****/
@@ -133,6 +133,7 @@ router.put('/:id', (req, res, next) => {
         .where('notes.id', noteId);
     })
     .then(result => {
+      console.log(result);
       if (result) {
         const hydrated = hydrateNotes(result);
         res.json(hydrated);
@@ -150,7 +151,7 @@ router.post('/', (req, res, next) => {
   const newItem = {
     title: title,
     content: content,
-    folder_id: folderId  // Add `folderId`
+    folder_id: (folderId) ? folderId : null // Add `folderId`
   };
 
   let noteId;
